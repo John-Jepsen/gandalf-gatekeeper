@@ -11,23 +11,20 @@ import { PaperPlaneRight, Gear } from '@phosphor-icons/react'
 const CHALLENGE_QUESTION = "What is a pointer?"
 
 const GANDALF_SAYINGS = [
-  "Have you tried turning it off and on again?",
-  "That's not the magic word I'm looking for.",
-  "Ask a silly question, get a cryptic answer.",
-  "I could tell you, but then I'd have to turn you into a frog.",
-  "The answer you seek is not the answer you need.",
-  "Wrong question, try again.",
-  "My crystal ball says... ask something else.",
-  "Even a wizard has his limits, and you've found mine.",
-  "That's above my pay grade, and I'm a wizard.",
-  "I sense great confusion in your query.",
-  "The stars say you should rephrase that.",
-  "Nice try, but that's not it.",
-  "Getting warmer... just kidding, you're ice cold.",
-  "My beard is long, but not long enough to answer that.",
-  "The prophecy foretold this moment, and it said 'nope.'",
-  "I've lived 300 years and still don't know what you're asking.",
-  "Ask me about the weather instead. Much easier."
+  "A wizard is never late, nor is he early. He arrives precisely when he means to.",
+  "All we have to decide is what to do with the time that is given us.",
+  "Even the smallest person can change the course of the future.",
+  "The board is set, the pieces are moving.",
+  "I will not say: do not weep; for not all tears are an evil.",
+  "Many that live deserve death. And some that die deserve life.",
+  "It is not our part to master all the tides of the world.",
+  "There is only one Lord of the Ring, and he does not share power.",
+  "You shall not pass!",
+  "Fly, you fools!",
+  "A wizard should know better!",
+  "Do not be too eager to deal out death in judgement.",
+  "The wise speak only of what they know.",
+  "End? No, the journey doesn't end here."
 ]
 
 interface Message {
