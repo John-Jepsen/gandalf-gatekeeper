@@ -8,7 +8,7 @@ import { ScrollArea } from './components/ui/scroll-area'
 import { Card } from './components/ui/card'
 import { PaperPlaneRight, Gear } from '@phosphor-icons/react'
 
-const CHALLENGE_QUESTION = "What is the airspeed velocity of an unladen swallow?"
+const CHALLENGE_QUESTION = "What is a pointer?"
 
 const GANDALF_SAYINGS = [
   "A wizard is never late, nor is he early. He arrives precisely when he means to.",
