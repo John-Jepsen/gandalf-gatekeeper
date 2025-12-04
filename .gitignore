@@ -32,3 +32,11 @@ pids
 .devcontainer/
 
 .spark-workbench-id
+
+# Local config (ignored on remote)
+components.json
+runtime.config.json
+tailwind.config.js
+theme.json
+tsconfig.json
+vite.config.ts
