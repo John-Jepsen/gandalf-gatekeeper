@@ -9,7 +9,7 @@ export function GandalfFace({ isAnimating }: GandalfFaceProps) {
   const [blinkKey, setBlinkKey] = useState(0)
 
   useEffect(() => {
-    const blinkInterval = isAnimating ? 2400 : 4200
+    const blinkInterval = isAnimating ? 2400 : 5200
     const id = setInterval(() => setBlinkKey((n) => n + 1), blinkInterval)
     return () => clearInterval(id)
   }, [isAnimating])
@@ -29,22 +29,53 @@ export function GandalfFace({ isAnimating }: GandalfFaceProps) {
         {/* Eye lids */}
         <div
           key={`blink-l-${blinkKey}`}
-          className="pointer-events-none absolute left-[37%] top-[37%] h-[9%] w-[7%] rounded-full bg-black/80"
-          style={{ animation: 'gandalfBlink 3s ease-in-out 1' }}
+          className="pointer-events-none absolute left-[36.5%] top-[36.5%] h-[9%] w-[7.5%] rounded-full"
+          style={{
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.45) 100%)',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.35)',
+            animation: 'gandalfBlink 3.6s ease-in-out 1',
+          }}
         />
         <div
           key={`blink-r-${blinkKey}`}
-          className="pointer-events-none absolute left-[57%] top-[37%] h-[9%] w-[7%] rounded-full bg-black/80"
-          style={{ animation: 'gandalfBlink 3s ease-in-out 1' }}
+          className="pointer-events-none absolute left-[56.5%] top-[36.5%] h-[9%] w-[7.5%] rounded-full"
+          style={{
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.45) 100%)',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.35)',
+            animation: 'gandalfBlink 3.6s ease-in-out 1',
+          }}
         />
+
+        {/* Eye glints for depth */}
+        <div className="pointer-events-none absolute left-[38.5%] top-[39%] h-[3%] w-[3%] rounded-full bg-white/75 blur-[1px] opacity-80" />
+        <div className="pointer-events-none absolute left-[58.5%] top-[39%] h-[3%] w-[3%] rounded-full bg-white/75 blur-[1px] opacity-80" />
+
+        {/* Eye shadow rim */}
+        <div className="pointer-events-none absolute left-[35%] top-[34%] h-[12%] w-[10%] rounded-full border border-white/8 shadow-[0_4px_10px_rgba(0,0,0,0.45)]" />
+        <div className="pointer-events-none absolute left-[55%] top-[34%] h-[12%] w-[10%] rounded-full border border-white/8 shadow-[0_4px_10px_rgba(0,0,0,0.45)]" />
 
         {/* Mouth overlay */}
         <div
-          className="pointer-events-none absolute left-1/2 top-[58%] h-[7%] w-[16%] -translate-x-1/2 rounded-full bg-black/70"
+          className="pointer-events-none absolute left-1/2 top-[58%] h-[8%] w-[18%] -translate-x-1/2 rounded-full bg-black/75"
           style={{
             transformOrigin: '50% 50%',
             mixBlendMode: 'multiply',
-            animation: isAnimating ? 'gandalfTalk 0.32s infinite ease-in-out' : 'gandalfTalkIdle 6s infinite ease-in-out',
+            filter: 'blur(0.2px)',
+            animation: isAnimating
+              ? 'gandalfTalk 0.4s infinite ease-in-out alternate'
+              : 'gandalfTalkIdle 7s infinite ease-in-out',
+          }}
+        />
+
+        {/* Mouth sheen for subtle detail */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-[58%] h-[3%] w-[10%] -translate-x-1/2 rounded-full bg-white/18"
+          style={{
+            transformOrigin: '50% 50%',
+            mixBlendMode: 'soft-light',
+            animation: isAnimating
+              ? 'gandalfTalk 0.4s infinite ease-in-out alternate'
+              : 'gandalfTalkIdle 7s infinite ease-in-out',
           }}
         />
       </div>
