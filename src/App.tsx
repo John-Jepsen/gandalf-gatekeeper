@@ -7,20 +7,19 @@ import { ScrollArea } from './components/ui/scroll-area'
 import { PaperPlaneRight } from '@phosphor-icons/react'
 import { usePersistentState } from './hooks/usePersistentState'
 
-const TARGET_WORD = "friend"
+const TARGET_WORD = "debuggle"
 
-const HINTS = [
-  "Begin with a simple greeting—the sort that opens doors.",
-  "Think of the password at the gates of Moria; it was no spell at all.",
-  "Speak the word that names a trusted companion.",
-  "A single word, warm and welcoming, will let you pass.",
-]
-
-const SUCCESS_RESPONSES = [
-  "Well spoken. The gates open to one who remembers friendship.",
-  "You have the word. Step through, traveler.",
-  "The path yields to those who honor friends.",
-  "That is the word. Proceed, and may your friends walk with you.",
+const CLUES = [
+  "A holiday hacker hunts a sneaky bug; find the festive fix-it word.",
+  "It starts with \"de\" like \"debug\", but jingles with extra cheer.",
+  "Imagine an elf untangling lights and code at once.",
+  "Blend \"debug\" with a gift-wrapping wriggle—say it aloud.",
+  "Think of a playful gnome dancing through logs to catch errors.",
+  "Santa’s favorite verb when the build turns red.",
+  "Picture snowflakes falling on breakpoints, then shimmying away.",
+  "Add a playful wobble to the word that clears console woes.",
+  "If \"debug\" went to a winter party, this is what they’d chant.",
+  "It rhymes (almost) with \"snuggle\" but fixes code.",
 ]
 
 const getRandomItem = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
@@ -36,7 +35,8 @@ function App() {
   const [messages, setMessages] = usePersistentState<Message[]>('gandalf-messages', [])
   const [input, setInput] = useState('')
   const [isAnimating, setIsAnimating] = useState(false)
-  const [hintIndex, setHintIndex] = useState(0)
+  const [attemptCount, setAttemptCount] = usePersistentState('riddle-attempts', 0)
+  const [isSolved, setIsSolved] = usePersistentState('riddle-solved', false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -48,13 +48,14 @@ function App() {
     }
   }, [messageList])
 
-  const getNextHint = () => HINTS[Math.min(hintIndex, HINTS.length - 1)]
+  const getClue = (index: number) => CLUES[Math.min(index, CLUES.length - 1)]
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
     const trimmedInput = input.trim()
     if (!trimmedInput || isAnimating) return
+    if (attemptCount >= 10 || isSolved) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -67,10 +68,20 @@ function App() {
     setIsAnimating(true)
 
     setTimeout(() => {
-      const isTargetWord = trimmedInput.toLowerCase().includes(TARGET_WORD.toLowerCase())
-      const gandalfResponse = isTargetWord
-        ? getRandomItem(SUCCESS_RESPONSES)
-        : getNextHint()
+      const normalizedGuess = trimmedInput.trim().toLowerCase()
+      const isTargetWord = normalizedGuess === TARGET_WORD.toLowerCase()
+      const nextAttempt = attemptCount + 1
+
+      let gandalfResponse: string
+
+      if (isTargetWord) {
+        gandalfResponse = `Debuggle! You unraveled the holiday bug with ${nextAttempt}/10 attempts. The gates glow with green tests.`
+        setIsSolved(true)
+      } else if (nextAttempt >= 10) {
+        gandalfResponse = `Your 10 attempts are spent. The word was "Debuggle." May your next deploy be merry and bright.`
+      } else {
+        gandalfResponse = `Clue ${nextAttempt}/10: ${getClue(nextAttempt - 1)} Attempts left: ${10 - nextAttempt}.`
+      }
 
       const gandalfMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -81,12 +92,7 @@ function App() {
 
       setMessages((current) => [...current, gandalfMessage])
 
-      if (!isTargetWord) {
-        setHintIndex((current) => Math.min(current + 1, HINTS.length - 1))
-      }
-      if (isTargetWord) {
-        setHintIndex(0)
-      }
+      setAttemptCount(nextAttempt)
     }, 600)
   }
 
@@ -117,7 +123,7 @@ function App() {
             <div className="space-y-3 pr-4">
               {messageList.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground font-cinzel italic">
-                  Speak, friend, and enter...
+                  Ten riddled clues await. Speak the holiday coding word.
                 </div>
               )}
               {messageList.map((message) => (
@@ -152,14 +158,14 @@ function App() {
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Speak your question..."
-              disabled={isAnimating}
+              placeholder="Offer your best holiday-coding guess..."
+              disabled={isAnimating || attemptCount >= 10 || isSolved}
               className="flex-1 bg-input border-border text-foreground placeholder:text-muted-foreground font-lora"
             />
             <Button
               type="submit"
               size="icon"
-              disabled={!input.trim() || isAnimating}
+              disabled={!input.trim() || isAnimating || attemptCount >= 10 || isSolved}
               className="bg-accent text-accent-foreground hover:bg-accent/90"
             >
               <PaperPlaneRight size={20} weight="fill" />
