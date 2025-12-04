@@ -9,7 +9,7 @@ export function GandalfFace({ isAnimating }: GandalfFaceProps) {
   const [blinkKey, setBlinkKey] = useState(0)
 
   useEffect(() => {
-    const blinkInterval = isAnimating ? 2400 : 5200
+    const blinkInterval = isAnimating ? 1900 : 4200
     const id = setInterval(() => setBlinkKey((n) => n + 1), blinkInterval)
     return () => clearInterval(id)
   }, [isAnimating])
@@ -53,6 +53,22 @@ export function GandalfFace({ isAnimating }: GandalfFaceProps) {
         {/* Eye shadow rim */}
         <div className="pointer-events-none absolute left-[35%] top-[34%] h-[12%] w-[10%] rounded-full border border-white/8 shadow-[0_4px_10px_rgba(0,0,0,0.45)]" />
         <div className="pointer-events-none absolute left-[55%] top-[34%] h-[12%] w-[10%] rounded-full border border-white/8 shadow-[0_4px_10px_rgba(0,0,0,0.45)]" />
+
+        {/* Pupils */}
+        <div
+          className="pointer-events-none absolute left-[39%] top-[39%] h-[2.8%] w-[2.8%] rounded-full bg-black/85 shadow-[0_0_4px_rgba(255,255,255,0.25)]"
+          style={{
+            transformOrigin: '50% 50%',
+            animation: isAnimating ? 'gandalfPupilTalk 1.2s infinite ease-in-out' : 'gandalfPupilIdle 6s infinite ease-in-out',
+          }}
+        />
+        <div
+          className="pointer-events-none absolute left-[59%] top-[39%] h-[2.8%] w-[2.8%] rounded-full bg-black/85 shadow-[0_0_4px_rgba(255,255,255,0.25)]"
+          style={{
+            transformOrigin: '50% 50%',
+            animation: isAnimating ? 'gandalfPupilTalk 1.2s infinite ease-in-out' : 'gandalfPupilIdle 6s infinite ease-in-out',
+          }}
+        />
 
         {/* Mouth overlay */}
         <div

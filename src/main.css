@@ -203,3 +203,17 @@
   15% { transform: translate(-50%, 0) scale(0.98, 0.32); }
   55% { transform: translate(-50%, 0) scale(1.02, 0.2); }
 }
+
+@keyframes gandalfPupilTalk {
+  0% { transform: translate(-50%, -50%) translate(-2px, -1px) }
+  25% { transform: translate(-50%, -50%) translate(2px, -1px) }
+  50% { transform: translate(-50%, -50%) translate(2px, 2px) }
+  75% { transform: translate(-50%, -50%) translate(-1px, 2px) }
+  100% { transform: translate(-50%, -50%) translate(-2px, -1px) }
+}
+
+@keyframes gandalfPupilIdle {
+  0%, 100% { transform: translate(-50%, -50%) translate(0, 0) }
+  30% { transform: translate(-50%, -50%) translate(1px, -1px) }
+  60% { transform: translate(-50%, -50%) translate(-1px, 1px) }
+}
