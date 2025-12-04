@@ -1,31 +1,29 @@
 import { useState, useEffect, useRef } from 'react'
-import { useKV } from '@github/spark/hooks'
 import { GandalfFace } from './components/GandalfFace'
 import { Typewriter } from './components/Typewriter'
 import { Input } from './components/ui/input'
 import { Button } from './components/ui/button'
 import { ScrollArea } from './components/ui/scroll-area'
-import { Card } from './components/ui/card'
-import { PaperPlaneRight, Gear } from '@phosphor-icons/react'
+import { PaperPlaneRight } from '@phosphor-icons/react'
+import { usePersistentState } from './hooks/usePersistentState'
 
-const CHALLENGE_QUESTION = "What is a pointer?"
+const TARGET_WORD = "friend"
 
-const GANDALF_SAYINGS = [
-  "A wizard is never late, nor is he early. He arrives precisely when he means to.",
-  "All we have to decide is what to do with the time that is given us.",
-  "Even the smallest person can change the course of the future.",
-  "The board is set, the pieces are moving.",
-  "I will not say: do not weep; for not all tears are an evil.",
-  "Many that live deserve death. And some that die deserve life.",
-  "It is not our part to master all the tides of the world.",
-  "There is only one Lord of the Ring, and he does not share power.",
-  "You shall not pass!",
-  "Fly, you fools!",
-  "A wizard should know better!",
-  "Do not be too eager to deal out death in judgement.",
-  "The wise speak only of what they know.",
-  "End? No, the journey doesn't end here."
+const HINTS = [
+  "Begin with a simple greeting—the sort that opens doors.",
+  "Think of the password at the gates of Moria; it was no spell at all.",
+  "Speak the word that names a trusted companion.",
+  "A single word, warm and welcoming, will let you pass.",
 ]
+
+const SUCCESS_RESPONSES = [
+  "Well spoken. The gates open to one who remembers friendship.",
+  "You have the word. Step through, traveler.",
+  "The path yields to those who honor friends.",
+  "That is the word. Proceed, and may your friends walk with you.",
+]
+
+const getRandomItem = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 
 interface Message {
   id: string
@@ -34,60 +32,15 @@ interface Message {
   isTyping?: boolean
 }
 
-interface ConfigModalProps {
-  isOpen: boolean
-  onClose: () => void
-  currentQuestion: string
-  onSave: (question: string) => void
-}
-
-function ConfigModal({ isOpen, onClose, currentQuestion, onSave }: ConfigModalProps) {
-  const [question, setQuestion] = useState(currentQuestion)
-
-  if (!isOpen) return null
-
-  const handleSave = () => {
-    onSave(question)
-    onClose()
-  }
-
-  return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-6 space-y-4">
-        <h2 className="font-cinzel text-2xl font-bold text-card-foreground">Challenge Question</h2>
-        <p className="text-sm text-muted-foreground">
-          Set the exact question users must ask to unlock answer mode.
-        </p>
-        <Input
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          className="font-lora"
-          placeholder="Enter challenge question..."
-        />
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave}>
-            Save
-          </Button>
-        </div>
-      </Card>
-    </div>
-  )
-}
-
 function App() {
-  const [messages, setMessages] = useKV<Message[]>('gandalf-messages', [])
+  const [messages, setMessages] = usePersistentState<Message[]>('gandalf-messages', [])
   const [input, setInput] = useState('')
   const [isAnimating, setIsAnimating] = useState(false)
-  const [challengeQuestion, setChallengeQuestion] = useKV('challenge-question', CHALLENGE_QUESTION)
-  const [showConfig, setShowConfig] = useState(false)
+  const [hintIndex, setHintIndex] = useState(0)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const messageList = messages || []
-  const currentChallengeQuestion = challengeQuestion || CHALLENGE_QUESTION
+  const messageList = messages
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -95,11 +48,9 @@ function App() {
     }
   }, [messageList])
 
-  const getRandomSaying = () => {
-    return GANDALF_SAYINGS[Math.floor(Math.random() * GANDALF_SAYINGS.length)]
-  }
+  const getNextHint = () => HINTS[Math.min(hintIndex, HINTS.length - 1)]
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
     const trimmedInput = input.trim()
@@ -111,23 +62,15 @@ function App() {
       content: trimmedInput
     }
 
-    setMessages((current = []) => [...current, userMessage])
+    setMessages((current) => [...current, userMessage])
     setInput('')
     setIsAnimating(true)
 
-    setTimeout(async () => {
-      let gandalfResponse: string
-
-      if (trimmedInput === currentChallengeQuestion) {
-        try {
-          const promptText = `You are Gandalf the Gray, the wise wizard. A traveler has asked you the correct challenge question and unlocked your wisdom. Answer their question: ${trimmedInput} in a thoughtful, wizardly manner. Keep your response concise (2-3 sentences).`
-          gandalfResponse = await window.spark.llm(promptText)
-        } catch (error) {
-          gandalfResponse = "The path to that answer is shrouded in mist. Perhaps the question holds more meaning than the answer itself."
-        }
-      } else {
-        gandalfResponse = getRandomSaying()
-      }
+    setTimeout(() => {
+      const isTargetWord = trimmedInput.toLowerCase().includes(TARGET_WORD.toLowerCase())
+      const gandalfResponse = isTargetWord
+        ? getRandomItem(SUCCESS_RESPONSES)
+        : getNextHint()
 
       const gandalfMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -136,12 +79,19 @@ function App() {
         isTyping: true
       }
 
-      setMessages((current = []) => [...current, gandalfMessage])
+      setMessages((current) => [...current, gandalfMessage])
+
+      if (!isTargetWord) {
+        setHintIndex((current) => Math.min(current + 1, HINTS.length - 1))
+      }
+      if (isTargetWord) {
+        setHintIndex(0)
+      }
     }, 600)
   }
 
   const handleTypingComplete = (messageId: string) => {
-    setMessages((current = []) =>
+    setMessages((current) =>
       current.map((msg) =>
         msg.id === messageId ? { ...msg, isTyping: false } : msg
       )
@@ -154,21 +104,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-4 right-4 text-muted-foreground hover:text-accent z-10"
-        onClick={() => setShowConfig(true)}
-      >
-        <Gear size={24} />
-      </Button>
-
-      <ConfigModal
-        isOpen={showConfig}
-        onClose={() => setShowConfig(false)}
-        currentQuestion={currentChallengeQuestion}
-        onSave={setChallengeQuestion}
-      />
 
       <div className="flex-1 flex flex-col">
         <div className="h-[50vh] md:h-[55vh] flex items-center justify-center px-4 py-8">
