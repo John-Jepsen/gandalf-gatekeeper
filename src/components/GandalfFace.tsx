@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import gandalfImg from '../assets/gandalf.jpeg'
 
 interface GandalfFaceProps {
   isAnimating: boolean
@@ -17,7 +18,7 @@ export function GandalfFace({ isAnimating }: GandalfFaceProps) {
     <div className="relative w-full max-w-2xl mx-auto">
       <div className="relative overflow-hidden rounded-2xl shadow-2xl">
         <img
-          src="/gandalf.jpeg"
+          src={gandalfImg}
           alt="Gandalf the Gatekeeper"
           className="w-full h-auto block select-none"
         />
