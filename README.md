@@ -1,5 +1,8 @@
 # Gandalf Gatekeeper
+
 ![Gatekeeper GIF](https://media1.tenor.com/m/1UgbfxIH5ywAAAAC/11.gif)
+
+
 An old wizard waits. Ask your questions. Find the word that opens the gate.
 
 ## Quick start
