@@ -37,15 +37,13 @@ function App() {
   const [isAnimating, setIsAnimating] = useState(false)
   const [attemptCount, setAttemptCount] = usePersistentState('riddle-attempts', 0)
   const [isSolved, setIsSolved] = usePersistentState('riddle-solved', false)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const messageList = messages
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messageList])
 
   const getClue = (index: number) => CLUES[Math.min(index, CLUES.length - 1)]
@@ -119,7 +117,7 @@ function App() {
         </div>
 
         <div className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 pb-4">
-          <ScrollArea className="flex-1 mb-4" ref={scrollRef}>
+          <ScrollArea className="flex-1 mb-4">
             <div className="space-y-3 pr-4">
               {messageList.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground font-cinzel italic">
@@ -150,27 +148,30 @@ function App() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
 
-          <form onSubmit={handleSubmit} className="flex gap-3">
-            <Input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Offer your best holiday-coding guess..."
-              disabled={isAnimating || attemptCount >= 10 || isSolved}
-              className="flex-1 bg-input border-border text-foreground placeholder:text-muted-foreground font-lora"
-            />
-            <Button
-              type="submit"
-              size="icon"
-              disabled={!input.trim() || isAnimating || attemptCount >= 10 || isSolved}
-              className="bg-accent text-accent-foreground hover:bg-accent/90"
-            >
-              <PaperPlaneRight size={20} weight="fill" />
-            </Button>
-          </form>
+          <div className="flex justify-center">
+            <form onSubmit={handleSubmit} className="flex w-full max-w-xl gap-3">
+              <Input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Offer your best holiday-coding guess..."
+                disabled={isAnimating || attemptCount >= 10 || isSolved}
+                className="flex-1 bg-input border-border text-foreground placeholder:text-muted-foreground font-lora text-center"
+              />
+              <Button
+                type="submit"
+                size="icon"
+                disabled={!input.trim() || isAnimating || attemptCount >= 10 || isSolved}
+                className="bg-accent text-accent-foreground hover:bg-accent/90"
+              >
+                <PaperPlaneRight size={20} weight="fill" />
+              </Button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
