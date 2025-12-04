@@ -1,0 +1,4 @@
+# Ignore everything locally; only keep README.md and this file tracked
+*
+!.gitignore
+!README.md
