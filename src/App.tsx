@@ -73,12 +73,12 @@ function App() {
       let gandalfResponse: string
 
       if (isTargetWord) {
-        gandalfResponse = `Debuggle! You unraveled the holiday bug with ${nextAttempt}/10 attempts. The gates glow with green tests.`
+        gandalfResponse = `Debuggle! You unraveled the holiday bug with your wits. The gates glow with green tests.`
         setIsSolved(true)
       } else if (nextAttempt >= 10) {
         gandalfResponse = `Your 10 attempts are spent. The word was "Debuggle." May your next deploy be merry and bright.`
       } else {
-        gandalfResponse = `Clue ${nextAttempt}/10: ${getClue(nextAttempt - 1)} Attempts left: ${10 - nextAttempt}.`
+        gandalfResponse = `Clue: ${getClue(nextAttempt - 1)}`
       }
 
       const gandalfMessage: Message = {
