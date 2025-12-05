@@ -118,7 +118,7 @@ function App() {
             <div className="space-y-3">
               {messageList.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground font-cinzel italic">
-                  Ten riddled clues await. Speak the holiday coding word.
+                  You get ten tries. Ten riddled clues await. Speak the holiday coding word.
                 </div>
               )}
               {messageList.map((message) => (
