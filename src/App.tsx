@@ -107,18 +107,15 @@ function App() {
   const currentlyTyping = messageList.some((m) => m.isTyping)
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-
-      <div className="flex-1 flex flex-col">
-        <div className="h-[50vh] md:h-[55vh] flex items-center justify-center px-4 py-8">
-          <div className="w-full max-w-md md:max-w-lg">
-            <GandalfFace isAnimating={currentlyTyping} />
-          </div>
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-4xl flex flex-col items-center gap-8">
+        <div className="w-full max-w-xl">
+          <GandalfFace isAnimating={currentlyTyping} />
         </div>
 
-        <div className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 pb-4">
-          <ScrollArea className="flex-1 mb-4">
-            <div className="space-y-3 pr-4">
+        <div className="w-full max-w-3xl bg-card/40 border border-border/40 rounded-2xl p-4 shadow-2xl backdrop-blur">
+          <ScrollArea className="h-[320px] pr-2 mb-4">
+            <div className="space-y-3">
               {messageList.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground font-cinzel italic">
                   Ten riddled clues await. Speak the holiday coding word.
@@ -152,26 +149,24 @@ function App() {
             </div>
           </ScrollArea>
 
-          <div className="flex justify-center">
-            <form onSubmit={handleSubmit} className="flex w-full max-w-xl gap-3">
-              <Input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Offer your best holiday-coding guess..."
-                disabled={isAnimating || attemptCount >= 10 || isSolved}
-                className="flex-1 bg-input border-border text-foreground placeholder:text-muted-foreground font-lora text-center"
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={!input.trim() || isAnimating || attemptCount >= 10 || isSolved}
-                className="bg-accent text-accent-foreground hover:bg-accent/90"
-              >
-                <PaperPlaneRight size={20} weight="fill" />
-              </Button>
-            </form>
-          </div>
+          <form onSubmit={handleSubmit} className="flex w-full max-w-2xl mx-auto gap-3 justify-center">
+            <Input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Offer your best holiday-coding guess..."
+              disabled={isAnimating || attemptCount >= 10 || isSolved}
+              className="flex-1 bg-input border-border text-foreground placeholder:text-muted-foreground font-lora text-center"
+            />
+            <Button
+              type="submit"
+              size="icon"
+              disabled={!input.trim() || isAnimating || attemptCount >= 10 || isSolved}
+              className="bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              <PaperPlaneRight size={20} weight="fill" />
+            </Button>
+          </form>
         </div>
       </div>
     </div>
