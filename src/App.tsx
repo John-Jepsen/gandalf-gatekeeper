@@ -8,18 +8,16 @@ import { PaperPlaneRight } from '@phosphor-icons/react'
 
 const SECRET_WORD = 'Debuggel'
 const SECRET_REVEAL = `Secrect Word is ${SECRET_WORD}.`
+const MAX_ATTEMPTS = 7
 
 const CLUES = [
-  'A pointer is a signpost that stores where data lives, not the data itself.',
-  'Think of it as a memory address on a map rather than the treasure chest.',
-  'Use `*` to follow the signpost and read what is stored at that address.',
-  'The `&` symbol takes an address so a pointer can hold it.',
-  'Pointers let arrays feel like math on addresses—increment to walk memory.',
-  'They can be null; check before dereferencing to avoid traps.',
-  'In C/C++, `int* p` means `p` keeps the address of an `int` value.',
-  'Dereferencing writes or reads through the pointer instead of copying data.',
-  'Powerful but perilous: double frees and leaks wait for the careless.',
-  `Final hint: a pointer is simply an address to data. ${SECRET_REVEAL}`,
+  'A pointer is Santa’s address tag—where the gift sits in the snowy heap of memory.',
+  'It stores the spot, not the present; follow it to read without hauling the box around.',
+  'Use `&` like a wrapping label to capture an address and tuck it into the pointer stocking.',
+  '`*` is your mitten to unwrap whatever lives at that address—peek or swap the contents.',
+  'Stride pointers through arrays like a sleigh hop: move the signpost, visit each gift.',
+  'Always check for null, like peeking down a chimney before sliding in—skip the segfault soot.',
+  `Holiday reveal: a pointer is simply an address to data. ${SECRET_REVEAL}`,
 ]
 
 interface Message {
@@ -51,7 +49,7 @@ function App() {
     
     const trimmedInput = input.trim()
     if (!trimmedInput || isAnimating) return
-    if (attemptCount >= 10 || isSolved) return
+    if (attemptCount >= MAX_ATTEMPTS || isSolved) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -73,7 +71,7 @@ function App() {
       if (isPointerQuestion) {
         gandalfResponse = SECRET_REVEAL
         setIsSolved(true)
-      } else if (nextAttempt >= 10) {
+      } else if (nextAttempt >= MAX_ATTEMPTS) {
         gandalfResponse = getClue(CLUES.length - 1)
         setIsSolved(true)
       } else {
@@ -117,7 +115,7 @@ function App() {
             <div className="space-y-3">
               {messageList.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground font-cinzel italic">
-                  You get ten tries. Ten riddled clues await. Speak the holiday coding word.
+                  You get seven tries. Seven riddled clues await. Speak the holiday coding word.
                 </div>
               )}
               {messageList.map((message) => (
