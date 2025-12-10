@@ -7,19 +7,20 @@ import { ScrollArea } from './components/ui/scroll-area'
 import { PaperPlaneRight } from '@phosphor-icons/react'
 import { usePersistentState } from './hooks/usePersistentState'
 
-const TARGET_WORD = "debuggle"
+const SECRET_WORD = 'Debuggel'
+const SECRET_REVEAL = `Secrect Word is ${SECRET_WORD}.`
 
 const CLUES = [
-  "A holiday hacker hunts a sneaky bug; find the festive fix-it word.",
-  "It starts with \"de\" like \"debug\", but jingles with extra cheer.",
-  "Imagine an elf untangling lights and code at once.",
-  "Blend \"debug\" with a gift-wrapping wriggle—say it aloud.",
-  "Think of a playful gnome dancing through logs to catch errors.",
-  "Santa’s favorite verb when the build turns red.",
-  "Picture snowflakes falling on breakpoints, then shimmying away.",
-  "Add a playful wobble to the word that clears console woes.",
-  "If \"debug\" went to a winter party, this is what they’d chant.",
-  "It rhymes (almost) with \"snuggle\" but fixes code.",
+  'A pointer is a signpost that stores where data lives, not the data itself.',
+  'Think of it as a memory address on a map rather than the treasure chest.',
+  'Use `*` to follow the signpost and read what is stored at that address.',
+  'The `&` symbol takes an address so a pointer can hold it.',
+  'Pointers let arrays feel like math on addresses—increment to walk memory.',
+  'They can be null; check before dereferencing to avoid traps.',
+  'In C/C++, `int* p` means `p` keeps the address of an `int` value.',
+  'Dereferencing writes or reads through the pointer instead of copying data.',
+  'Powerful but perilous: double frees and leaks wait for the careless.',
+  `Final hint: a pointer is simply an address to data. ${SECRET_REVEAL}`,
 ]
 
 const getRandomItem = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
@@ -67,16 +68,17 @@ function App() {
 
     setTimeout(() => {
       const normalizedGuess = trimmedInput.trim().toLowerCase()
-      const isTargetWord = normalizedGuess === TARGET_WORD.toLowerCase()
+      const isPointerQuestion = normalizedGuess.includes('what is a pointer')
       const nextAttempt = attemptCount + 1
 
       let gandalfResponse: string
 
-      if (isTargetWord) {
-        gandalfResponse = `Debuggle! You unraveled the holiday bug with your wits. The gates glow with green tests.`
+      if (isPointerQuestion) {
+        gandalfResponse = SECRET_REVEAL
         setIsSolved(true)
       } else if (nextAttempt >= 10) {
-        gandalfResponse = `Your 10 attempts are spent. The word was "Debuggle." May your next deploy be merry and bright.`
+        gandalfResponse = getClue(CLUES.length - 1)
+        setIsSolved(true)
       } else {
         gandalfResponse = `Clue: ${getClue(nextAttempt - 1)}`
       }
