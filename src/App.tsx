@@ -5,7 +5,6 @@ import { Input } from './components/ui/input'
 import { Button } from './components/ui/button'
 import { ScrollArea } from './components/ui/scroll-area'
 import { PaperPlaneRight } from '@phosphor-icons/react'
-import { usePersistentState } from './hooks/usePersistentState'
 
 const SECRET_WORD = 'Debuggel'
 const SECRET_REVEAL = `Secrect Word is ${SECRET_WORD}.`
@@ -23,8 +22,6 @@ const CLUES = [
   `Final hint: a pointer is simply an address to data. ${SECRET_REVEAL}`,
 ]
 
-const getRandomItem = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)]
-
 interface Message {
   id: string
   role: 'user' | 'gandalf'
@@ -33,11 +30,11 @@ interface Message {
 }
 
 function App() {
-  const [messages, setMessages] = usePersistentState<Message[]>('gandalf-messages', [])
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isAnimating, setIsAnimating] = useState(false)
-  const [attemptCount, setAttemptCount] = usePersistentState('riddle-attempts', 0)
-  const [isSolved, setIsSolved] = usePersistentState('riddle-solved', false)
+  const [attemptCount, setAttemptCount] = useState(0)
+  const [isSolved, setIsSolved] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
