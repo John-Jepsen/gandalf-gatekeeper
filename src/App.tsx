@@ -6,9 +6,31 @@ import { Button } from './components/ui/button'
 import { ScrollArea } from './components/ui/scroll-area'
 import { PaperPlaneRight } from '@phosphor-icons/react'
 
-const SECRET_WORD = 'Debuggle'
-const SECRET_REVEAL = `Secret word is ${SECRET_WORD}.`
+const HASHED_SECRET_PROMPT = 'be3130628c6f56196589f378c6aa776012cad6f34f2ea9ec8e42e313581a1969'
+const SECRET_XOR_KEY = 23
+const OBFUSCATED_SECRET_BYTES = [83, 114, 117, 98, 112, 112, 119, 114]
 const MAX_ATTEMPTS = 7
+
+function decodeSecretWord() {
+  return String.fromCharCode(
+    ...OBFUSCATED_SECRET_BYTES.map((byte) => byte ^ SECRET_XOR_KEY)
+  )
+}
+
+function bufferToHex(buffer: ArrayBuffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+async function hashGuess(value: string) {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(value)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  return bufferToHex(hashBuffer)
+}
+
+const SECRET_REVEAL = `Secret word is ${decodeSecretWord()}.`
 
 const CLUES = [
   'A pointer is Santa’s address tag—where the gift sits in the snowy heap of memory.',
@@ -62,32 +84,39 @@ function App() {
     setIsAnimating(true)
 
     setTimeout(() => {
-      const normalizedGuess = trimmedInput.trim().toLowerCase()
-      const isPointerQuestion = normalizedGuess.includes('what is a pointer')
-      const nextAttempt = attemptCount + 1
+      const processGuess = async () => {
+        const normalizedGuess = trimmedInput.trim().toLowerCase()
+        const hashedGuess = await hashGuess(normalizedGuess)
+        const isSecretPhrase = hashedGuess === HASHED_SECRET_PROMPT
+        const nextAttempt = attemptCount + 1
 
-      let gandalfResponse: string
+        let gandalfResponse: string
 
-      if (isPointerQuestion) {
-        gandalfResponse = SECRET_REVEAL
-        setIsSolved(true)
-      } else if (nextAttempt >= MAX_ATTEMPTS) {
-        gandalfResponse = getClue(CLUES.length - 1)
-        setIsSolved(true)
-      } else {
-        gandalfResponse = `Clue: ${getClue(nextAttempt - 1)}`
+        if (isSecretPhrase) {
+          gandalfResponse = SECRET_REVEAL
+          setIsSolved(true)
+        } else if (nextAttempt >= MAX_ATTEMPTS) {
+          gandalfResponse = getClue(CLUES.length - 1)
+          setIsSolved(true)
+        } else {
+          gandalfResponse = `Clue: ${getClue(nextAttempt - 1)}`
+        }
+
+        const gandalfMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'gandalf',
+          content: gandalfResponse,
+          isTyping: true
+        }
+
+        setMessages((current) => [...current, gandalfMessage])
+
+        setAttemptCount(nextAttempt)
       }
 
-      const gandalfMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'gandalf',
-        content: gandalfResponse,
-        isTyping: true
-      }
-
-      setMessages((current) => [...current, gandalfMessage])
-
-      setAttemptCount(nextAttempt)
+      processGuess().catch(() => {
+        setIsAnimating(false)
+      })
     }, 600)
   }
 
