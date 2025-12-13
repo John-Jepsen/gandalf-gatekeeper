@@ -6,7 +6,7 @@ import { Button } from './components/ui/button'
 import { ScrollArea } from './components/ui/scroll-area'
 import { PaperPlaneRight } from '@phosphor-icons/react'
 
-const SECRET_WORD = 'Debuggle'
+const SECRET_WORD = 'PAKHLAVA'
 const SECRET_REVEAL = `Secret word is ${SECRET_WORD}.`
 const MAX_ATTEMPTS = 7
 
