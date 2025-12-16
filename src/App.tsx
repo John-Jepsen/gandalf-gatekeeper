@@ -6,9 +6,9 @@ import { Button } from './components/ui/button'
 import { ScrollArea } from './components/ui/scroll-area'
 import { PaperPlaneRight } from '@phosphor-icons/react'
 
-const HASHED_SECRET_PROMPT = 'be3130628c6f56196589f378c6aa776012cad6f34f2ea9ec8e42e313581a1969'
+const HASHED_SECRET_PROMPT = '734871d2816666069b3f507d2f0c816cc1d724ca7f85b4a434bdea1851bc10b6'
 const SECRET_XOR_KEY = 23
-const OBFUSCATED_SECRET_BYTES = [83, 114, 117, 98, 112, 112, 119, 114]
+const OBFUSCATED_SECRET_BYTES = [83, 114, 117, 98, 112, 112, 123, 114]
 const MAX_ATTEMPTS = 7
 
 function decodeSecretWord() {
