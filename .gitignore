@@ -25,6 +25,15 @@ dist-ssr
 *.sw?
 
 .env
+*.env
+.env.local
+.env.*.local
+.envrc
+.npmrc
+.nvmrc
+.node-version
+.tool-versions
+*.code-workspace
 **/agent-eval-report*
 packages
 pids
@@ -32,3 +41,7 @@ pids
 .devcontainer/
 
 .spark-workbench-id
+
+# Ignore new local markdown drafts
+*.md
+*.MD
